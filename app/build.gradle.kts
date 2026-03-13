@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.miguelmialdea.rickandmortyapp"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.miguelmialdea.rickandmortyapp"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
