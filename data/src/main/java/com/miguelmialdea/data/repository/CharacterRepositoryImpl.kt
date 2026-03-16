@@ -1,9 +1,11 @@
 package com.miguelmialdea.data.repository
 
+import android.util.Log
 import com.miguelmialdea.data.database.datasource.CharacterDataSourceLocal
 import com.miguelmialdea.data.datasource.CharacterDataSource
 import com.miguelmialdea.domain.model.CharacterModel
 import com.miguelmialdea.domain.repository.CharacterRepository
+import java.io.IOException
 
 class CharacterRepositoryImpl(
     private val remoteDataSource: CharacterDataSource,
@@ -16,7 +18,11 @@ class CharacterRepositoryImpl(
                 localDataSource.removeCharacters()
                 localDataSource.saveCharacters(remoteCharacters)
                 remoteCharacters
-            } catch (e: Exception) {
+            } catch (e: IOException) {
+                Log.e(TAG, "Network error fetching characters", e)
+                localDataSource.getCharacters()
+            } catch (e: retrofit2.HttpException) {
+                Log.e(TAG, "HTTP error fetching characters", e)
                 localDataSource.getCharacters()
             }
         } else {
@@ -26,10 +32,18 @@ class CharacterRepositoryImpl(
                     val remoteCharacters = remoteDataSource.getCharacters()
                     localDataSource.saveCharacters(remoteCharacters)
                     remoteCharacters
-                } catch (e: Exception) {
+                } catch (e: IOException) {
+                    Log.e(TAG, "Network error fetching characters", e)
+                    emptyList()
+                } catch (e: retrofit2.HttpException) {
+                    Log.e(TAG, "HTTP error fetching characters", e)
                     emptyList()
                 }
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "CharacterRepository"
     }
 }

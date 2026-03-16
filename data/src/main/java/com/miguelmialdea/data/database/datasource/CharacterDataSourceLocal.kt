@@ -7,3 +7,4 @@ interface CharacterDataSourceLocal {
     suspend fun saveCharacters(characters: List<CharacterModel>)
     suspend fun removeCharacters()
 }
+
