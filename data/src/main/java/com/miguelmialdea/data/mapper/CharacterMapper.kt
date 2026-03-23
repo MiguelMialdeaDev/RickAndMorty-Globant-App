@@ -2,7 +2,6 @@ package com.miguelmialdea.data.mapper
 
 import com.miguelmialdea.data.database.entity.CharacterEntity
 import com.miguelmialdea.data.dto.CharacterDto
-import com.miguelmialdea.data.dto.CharactersResponse
 import com.miguelmialdea.data.dto.LocationDto
 import com.miguelmialdea.data.dto.OriginDto
 import com.miguelmialdea.domain.model.CharacterModel
@@ -18,9 +17,9 @@ fun CharacterDto.toModel() =
         type = this.type,
         gender = this.gender,
         origin = this.origin.toModel(),
-        location = this.location.toModel(),
+        location = this.location?.toModel() ?: LocationModel(""),
         image = this.image,
-        episode = this.episode
+        episode = this.episode ?: emptyList()
     )
 
 fun OriginDto.toModel() =
@@ -59,4 +58,18 @@ fun CharacterModel.toEntity() =
         location = this.location.name,
         image = this.image,
         episode = this.episode
+    )
+
+fun CharacterDto.toEntity() =
+    CharacterEntity(
+        id = this.id,
+        name = this.name,
+        status = this.status,
+        species = this.species,
+        type = this.type,
+        gender = this.gender,
+        origin = this.origin.name,
+        location = this.location?.name.orEmpty(),
+        image = this.image,
+        episode = this.episode ?: emptyList(),
     )

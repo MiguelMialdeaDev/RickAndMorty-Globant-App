@@ -1,49 +1,38 @@
 package com.miguelmialdea.data.repository
 
-import android.util.Log
-import com.miguelmialdea.data.database.datasource.CharacterDataSourceLocal
-import com.miguelmialdea.data.datasource.CharacterDataSource
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
+import com.miguelmialdea.data.ApiService
+import com.miguelmialdea.data.database.AppDatabase
+import com.miguelmialdea.data.mapper.toModel
+import com.miguelmialdea.data.paging.CharacterRemoteMediator
 import com.miguelmialdea.domain.model.CharacterModel
 import com.miguelmialdea.domain.repository.CharacterRepository
-import java.io.IOException
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class CharacterRepositoryImpl(
-    private val remoteDataSource: CharacterDataSource,
-    private val localDataSource: CharacterDataSourceLocal
-): CharacterRepository {
-    override suspend fun getCharacters(forceRefresh: Boolean): List<CharacterModel> {
-        return if (forceRefresh) {
-            try {
-                val remoteCharacters = remoteDataSource.getCharacters()
-                localDataSource.removeCharacters()
-                localDataSource.saveCharacters(remoteCharacters)
-                remoteCharacters
-            } catch (e: IOException) {
-                Log.e(TAG, "Network error fetching characters", e)
-                localDataSource.getCharacters()
-            } catch (e: retrofit2.HttpException) {
-                Log.e(TAG, "HTTP error fetching characters", e)
-                localDataSource.getCharacters()
-            }
-        } else {
-            val localCharacters = localDataSource.getCharacters()
-            localCharacters.ifEmpty {
-                try {
-                    val remoteCharacters = remoteDataSource.getCharacters()
-                    localDataSource.saveCharacters(remoteCharacters)
-                    remoteCharacters
-                } catch (e: IOException) {
-                    Log.e(TAG, "Network error fetching characters", e)
-                    emptyList()
-                } catch (e: retrofit2.HttpException) {
-                    Log.e(TAG, "HTTP error fetching characters", e)
-                    emptyList()
-                }
-            }
-        }
-    }
+    private val apiService: ApiService,
+    private val database: AppDatabase
+) : CharacterRepository {
 
-    companion object {
-        private const val TAG = "CharacterRepository"
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getCharactersPaged(): Flow<PagingData<CharacterModel>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = true,
+                initialLoadSize = 40,
+                prefetchDistance = 10,
+                maxSize = 200
+            ),
+            remoteMediator = CharacterRemoteMediator(apiService, database),
+            pagingSourceFactory = { database.characterDao().getAllCharactersPaged() }
+        ).flow.map { pagingData ->
+            pagingData.map { it.toModel() }
+        }
     }
 }

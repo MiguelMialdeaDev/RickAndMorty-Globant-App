@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">RickAndMortyApp</string>
+
+    <!-- Home Screen -->
+    <string name="home_title">Rick and Morty</string>
+    <string name="error_unknown">Error desconocido</string>
+    <string name="button_retry">Reintentar</string>
+
+    <!-- Character Item -->
+    <string name="character_status_species">%1$s - %2$s</string>
 </resources>

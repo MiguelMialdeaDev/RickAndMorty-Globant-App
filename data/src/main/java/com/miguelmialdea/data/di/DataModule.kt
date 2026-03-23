@@ -1,13 +1,11 @@
 package com.miguelmialdea.data.di
 
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.miguelmialdea.data.ApiService
 import com.miguelmialdea.data.database.AppDatabase
-import com.miguelmialdea.data.database.datasource.CharacterDataSourceLocal
-import com.miguelmialdea.data.database.datasource.CharacterDataSourceLocalImpl
-import com.miguelmialdea.data.datasource.CharacterDataSource
-import com.miguelmialdea.data.datasource.CharacterDataSourceImpl
 import com.miguelmialdea.data.repository.CharacterRepositoryImpl
 import com.miguelmialdea.domain.repository.CharacterRepository
 import kotlinx.serialization.json.Json
@@ -61,23 +59,17 @@ val dataModule = module {
             get(),
             AppDatabase::class.java,
             "rickandmorty_db"
-        ).build(
         )
+            .fallbackToDestructiveMigration()  // Fallback solo si la migración falla
+            .build()
     }
 
     single { get<AppDatabase>().characterDao() }
 
-    single<CharacterDataSource> {
-        CharacterDataSourceImpl(get())
-    }
-    single<CharacterDataSourceLocal> {
-        CharacterDataSourceLocalImpl(get())
-    }
-
     single<CharacterRepository> {
         CharacterRepositoryImpl(
-            remoteDataSource = get(),
-            localDataSource = get()
+            apiService = get(),
+            database = get()
         )
     }
 }

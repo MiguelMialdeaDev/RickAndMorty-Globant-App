@@ -5,5 +5,6 @@ import kotlinx.serialization.SerialName
 
 @Serializable
 data class CharactersResponse(
-    @SerialName("results") val results: List<CharacterDto>
+    @SerialName("info") val info: InfoDto? = null,
+    @SerialName("results") val results: List<CharacterDto>? = listOf()
 )

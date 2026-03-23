@@ -1,7 +1,9 @@
 package com.miguelmialdea.domain.repository
 
+import androidx.paging.PagingData
 import com.miguelmialdea.domain.model.CharacterModel
+import kotlinx.coroutines.flow.Flow
 
 interface CharacterRepository {
-    suspend fun getCharacters(forceRefresh: Boolean): List<CharacterModel>
+    fun getCharactersPaged(): Flow<PagingData<CharacterModel>>
 }
