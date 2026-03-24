@@ -65,7 +65,6 @@ class CharacterRemoteMediator(
         } catch (e: IOException) {
             MediatorResult.Error(e)
         } catch (e: retrofit2.HttpException) {
-            // Si es 404, significa que no hay resultados (no es un error real)
             if (e.code() == 404) {
                 MediatorResult.Success(endOfPaginationReached = true)
             } else {

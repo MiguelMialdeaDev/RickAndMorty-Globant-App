@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit
 
 val dataModule = module {
 
-    // Json
     single {
         Json {
             ignoreUnknownKeys = true
@@ -26,7 +25,6 @@ val dataModule = module {
         }
     }
 
-    // OkHttpClient
     single {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -39,7 +37,6 @@ val dataModule = module {
             .build()
     }
 
-    // Retrofit
     single {
         val contentType = "application/json".toMediaType()
 
@@ -60,7 +57,7 @@ val dataModule = module {
             AppDatabase::class.java,
             "rickandmorty_db"
         )
-            .fallbackToDestructiveMigration()  // Fallback solo si la migración falla
+            .fallbackToDestructiveMigration()
             .build()
     }
 
