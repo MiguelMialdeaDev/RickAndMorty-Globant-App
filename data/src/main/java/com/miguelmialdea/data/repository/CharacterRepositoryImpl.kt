@@ -20,7 +20,9 @@ class CharacterRepositoryImpl(
 ) : CharacterRepository {
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getCharactersPaged(): Flow<PagingData<CharacterModel>> {
+    override fun getCharactersPaged(query: String): Flow<PagingData<CharacterModel>> {
+        val searchQuery = query.trim().takeIf { it.isNotBlank() }
+
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
@@ -29,8 +31,18 @@ class CharacterRepositoryImpl(
                 prefetchDistance = 10,
                 maxSize = 200
             ),
-            remoteMediator = CharacterRemoteMediator(apiService, database),
-            pagingSourceFactory = { database.characterDao().getAllCharactersPaged() }
+            remoteMediator = CharacterRemoteMediator(
+                query = searchQuery,
+                apiService = apiService,
+                database = database
+            ),
+            pagingSourceFactory = {
+                if (searchQuery != null) {
+                    database.characterDao().searchCharactersPaged(searchQuery)
+                } else {
+                    database.characterDao().getAllCharactersPaged()
+                }
+            }
         ).flow.map { pagingData ->
             pagingData.map { it.toModel() }
         }

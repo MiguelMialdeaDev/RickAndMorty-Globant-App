@@ -5,5 +5,5 @@ import com.miguelmialdea.domain.model.CharacterModel
 import kotlinx.coroutines.flow.Flow
 
 interface CharacterRepository {
-    fun getCharactersPaged(): Flow<PagingData<CharacterModel>>
+    fun getCharactersPaged(query: String = ""): Flow<PagingData<CharacterModel>>
 }

@@ -6,6 +6,11 @@
     <string name="error_unknown">Error desconocido</string>
     <string name="button_retry">Reintentar</string>
 
+    <!-- Search -->
+    <string name="search_placeholder">Buscar personajes...</string>
+    <string name="search_hint">Buscar por nombre</string>
+    <string name="search_no_results">No se encontraron personajes con ese nombre</string>
+
     <!-- Character Item -->
     <string name="character_status_species">%1$s - %2$s</string>
 </resources>

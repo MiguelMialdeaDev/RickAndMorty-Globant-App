@@ -12,6 +12,9 @@ interface CharacterDao {
     @Query("SELECT * FROM characters ORDER BY id ASC")
     fun getAllCharactersPaged(): PagingSource<Int, CharacterEntity>
 
+    @Query("SELECT * FROM characters WHERE name LIKE '%' || :query || '%' ORDER BY id ASC")
+    fun searchCharactersPaged(query: String): PagingSource<Int, CharacterEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveCharacters(characters: List<CharacterEntity>)
 

@@ -14,6 +14,7 @@ import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
 class CharacterRemoteMediator(
+    private val query: String?,
     private val apiService: ApiService,
     private val database: AppDatabase
 ) : RemoteMediator<Int, CharacterEntity>() {
@@ -36,7 +37,11 @@ class CharacterRemoteMediator(
                 }
             }
 
-            val response = apiService.getCharacters(page)
+            val response = if (query != null) {
+                apiService.searchCharacters(page, name = query)
+            } else {
+                apiService.getCharacters(page)
+            }
             val characters = response.results?.map { it.toEntity() } ?: emptyList()
             val endOfPaginationReached = response.info?.next == null
 
@@ -60,7 +65,12 @@ class CharacterRemoteMediator(
         } catch (e: IOException) {
             MediatorResult.Error(e)
         } catch (e: retrofit2.HttpException) {
-            MediatorResult.Error(e)
+            // Si es 404, significa que no hay resultados (no es un error real)
+            if (e.code() == 404) {
+                MediatorResult.Success(endOfPaginationReached = true)
+            } else {
+                MediatorResult.Error(e)
+            }
         } catch (e: Exception) {
             MediatorResult.Error(e)
         }

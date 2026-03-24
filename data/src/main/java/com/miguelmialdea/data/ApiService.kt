@@ -10,4 +10,10 @@ interface ApiService {
     suspend fun getCharacters(
         @Query("page") page: Int = 1
     ): CharactersResponse
+
+    @GET("character")
+    suspend fun searchCharacters(
+        @Query("page") page: Int = 1,
+        @Query("name") name: String
+    ): CharactersResponse
 }
