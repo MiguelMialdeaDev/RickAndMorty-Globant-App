@@ -16,7 +16,8 @@ import kotlinx.coroutines.flow.map
 
 class CharacterRepositoryImpl(
     private val apiService: ApiService,
-    private val database: AppDatabase
+    private val database: AppDatabase,
+    private val remoteDataSource: com.miguelmialdea.data.datasource.CharacterDataSource
 ) : CharacterRepository {
 
     @OptIn(ExperimentalPagingApi::class)
@@ -45,6 +46,15 @@ class CharacterRepositoryImpl(
             }
         ).flow.map { pagingData ->
             pagingData.map { it.toModel() }
+        }
+    }
+
+    override suspend fun getCharacterById(id: Int): Result<CharacterModel> {
+        return try {
+            val character = remoteDataSource.getCharacterById(id)
+            Result.success(character.toModel())
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }

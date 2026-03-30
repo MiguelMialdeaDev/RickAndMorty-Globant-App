@@ -1,7 +1,9 @@
 package com.miguelmialdea.data
 
+import com.miguelmialdea.data.dto.CharacterDto
 import com.miguelmialdea.data.dto.CharactersResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -16,4 +18,9 @@ interface ApiService {
         @Query("page") page: Int = 1,
         @Query("name") name: String
     ): CharactersResponse
+
+    @GET("character/{id}")
+    suspend fun getCharacterById(
+        @Path("id") id: Int
+    ): CharacterDto
 }

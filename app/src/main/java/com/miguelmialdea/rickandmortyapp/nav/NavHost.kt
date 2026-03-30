@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.miguelmialdea.rickandmortyapp.detail.DetailScreen
 import com.miguelmialdea.rickandmortyapp.home.HomeScreen
 
 @Composable
@@ -28,10 +29,10 @@ fun AppNavHost(
 
         composable<Routes.Detail> { backStackEntry ->
             val detail: Routes.Detail = backStackEntry.toRoute()
-            /*DetailScreen(
+            DetailScreen(
                 characterId = detail.id,
-                onBack = { navController.popBackStack() }
-            )*/
+                onBackClick = { navController.popBackStack() }
+            )
         }
     }
 }
