@@ -79,7 +79,6 @@ val dataModule = module {
         )
     }
 
-    // Use Cases
     single { GetCharactersUseCase(get()) }
     single { GetCharacterByIdUseCase(get()) }
 }

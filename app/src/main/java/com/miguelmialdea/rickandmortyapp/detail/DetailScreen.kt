@@ -96,7 +96,6 @@ private fun DetailContent(character: CharacterModel) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        // Imagen grande arriba
         Box {
             AsyncImage(
                 model = character.image,
@@ -106,7 +105,6 @@ private fun DetailContent(character: CharacterModel) {
                     .height(300.dp),
                 contentScale = ContentScale.Crop
             )
-            // Badge de estado en esquina inferior derecha
             Box(
                 modifier = Modifier
                     .padding(16.dp)
@@ -117,21 +115,18 @@ private fun DetailContent(character: CharacterModel) {
             )
         }
 
-        // Información del personaje
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Nombre
             Text(
                 text = character.name,
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-            // Card con información
             Card(
                 modifier = Modifier.fillMaxWidth()
             ) {

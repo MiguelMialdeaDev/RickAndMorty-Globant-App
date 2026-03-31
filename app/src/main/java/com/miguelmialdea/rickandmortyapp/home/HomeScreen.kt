@@ -80,7 +80,6 @@ fun HomeScreen(
                 }
                 is LoadState.NotLoading -> {
                     if (characters.itemCount == 0) {
-                        // Sin resultados
                         Column(
                             modifier = Modifier.align(Alignment.Center),
                             horizontalAlignment = Alignment.CenterHorizontally,
